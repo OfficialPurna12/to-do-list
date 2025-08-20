@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern To-Do List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+   
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-tasks"></i> Modern Task Manager
+            </div>
+            <div class="navbar-controls">
+                <div class="current-time">
+                    <i class="fas fa-clock"></i>
+                    <span id="currentTime">Loading...</span>
+                </div>
+                <div class="nav-buttons">
+                    <button class="nav-btn btn-import" id="importBtn">
+                        <i class="fas fa-file-import"></i> Import
+                    </button>
+                    <button class="nav-btn btn-export" id="exportBtn">
+                        <i class="fas fa-file-export"></i> Export
+                    </button>
+                </div>
+                <button class="theme-toggle" id="themeToggle"></button>
+            </div>
+        </nav>
+
+        <div class="controls">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search tasks...">
+            </div>
+            <select class="filter-select" id="statusFilter">
+                <option value="all">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="in-progress">In Progress</option>
+                <option value="completed">Completed</option>
+                <option value="overdue">Overdue</option>
+            </select>
+            <select class="filter-select" id="priorityFilter">
+                <option value="all">All Priorities</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+            </select>
+        </div>
+
+        <div class="main-content">
+            <div class="task-table-container">
+                <table class="task-table">
+                    <thead>
+                        <tr>
+                            <th data-sort="title">Task Title <i class="fas fa-sort"></i></th>
+                            <th data-sort="priority">Priority <i class="fas fa-sort"></i></th>
+                            <th data-sort="dueDate">Due Date <i class="fas fa-sort"></i></th>
+                            <th data-sort="status">Status <i class="fas fa-sort"></i></th>
+                            <th>Time Tracking</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="taskList">
+                        <!-- Tasks will be populated here by JavaScript -->
+                    </tbody>
+                </table>
+                <div class="empty-state" id="emptyState">
+                    <i class="fas fa-clipboard-list"></i>
+                    <p>No tasks found. Add a new task to get started!</p>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="stats-card">
+                    <h3><i class="fas fa-chart-pie"></i> Task Statistics</h3>
+                    <div class="stat">
+                        <span>Total Tasks:</span>
+                        <span class="stat-value" id="totalTasks">0</span>
+                    </div>
+                    <div class="stat">
+                        <span>Completed:</span>
+                        <span class="stat-value" id="completedTasks">0</span>
+                    </div>
+                    <div class="stat">
+                        <span>In Progress:</span>
+                        <span class="stat-value" id="inProgressTasks">0</span>
+                    </div>
+                    <div class="stat">
+                        <span>Overdue:</span>
+                        <span class="stat-value" id="overdueTasks">0</span>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <h3><i class="fas fa-clock"></i> Time Management</h3>
+                    <div class="stat">
+                        <span>Total Time Estimated:</span>
+                        <span class="stat-value" id="totalEstimated">0h 0m</span>
+                    </div>
+                    <div class="stat">
+                        <span>Total Time Spent:</span>
+                        <span class="stat-value" id="totalSpent">0h 0m</span>
+                    </div>
+                    <div class="stat">
+                        <span>Productivity Ratio:</span>
+                        <span class="stat-value" id="productivityRatio">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="add-task-btn" id="addTaskBtn">
+            <i class="fas fa-plus"></i>
+        </button>
+
+        <div class="modal" id="taskModal">
+            <div class="modal-content">
+                <span class="close-modal" id="closeModal">&times;</span>
+                <h2 id="modalTitle">Add New Task</h2>
+                <form id="taskForm">
+                    <input type="hidden" id="taskId">
+                    <div class="form-group">
+                        <label for="taskTitle">Task Title *</label>
+                        <input type="text" class="form-control" id="taskTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskDescription">Description</label>
+                        <textarea class="form-control" id="taskDescription" rows="3"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="taskPriority">Priority</label>
+                            <select class="form-control" id="taskPriority">
+                                <option value="high">High</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="low">Low</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="taskStatus">Status</label>
+                            <select class="form-control" id="taskStatus">
+                                <option value="pending">Pending</option>
+                                <option value="in-progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dueDate">Due Date</label>
+                            <input type="date" class="form-control" id="dueDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="dueTime">Due Time (optional)</label>
+                            <input type="time" class="form-control" id="dueTime">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="estimatedDuration">Estimated Duration (minutes)</label>
+                            <input type="number" class="form-control" id="estimatedDuration" min="0" value="30">
+                        </div>
+                        <div class="form-group">
+                            <label for="timeSpent">Time Spent (minutes)</label>
+                            <input type="number" class="form-control" id="timeSpent" min="0" value="0">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit">Save Task</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="toast" id="toast">
+            <i class="fas fa-check-circle"></i>
+            <span id="toastMessage"></span>
+        </div>
+
+        <input type="file" id="importFile" accept=".json" style="display: none;">
+    </div>
+
+    <script src="script.js">
+    
+    </script>
+</body>
+</html>
